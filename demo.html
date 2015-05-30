@@ -1,0 +1,330 @@
+<html>
+	<head>
+		<script src='demo/grid.js'></script>
+		<script src='lib/triceraplots.js'></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700' rel='stylesheet' type='text/css'>
+		<link href='demo/fontello/css/fontello.css' rel='stylesheet' type='text/css'>
+		<style>
+			
+			.pink{color:#fce4ec;}
+			.pink1{color:#f48fb1;}
+			.pink2{color:#c2185b;}
+			
+			.blue{color:#448aff}
+			.blue1{color:#2979ff}
+			.blue2{color:#2962ff}
+
+			*{margin:0px;padding:0px;box-sizing:border-box;line-height:100%;}
+			html{font-size:8px;}
+			body{
+				background:  #f5f5f5;
+				color : rgba(0,0,0,.85);
+				color : #37474f;
+				font-family: 'Roboto', sans-serif;
+				font-size:2rem;
+				font-weight:100;
+				background-image: url(bg.svg);
+				background-repeat: no-repeat;
+				background-position : -1911px 250px;
+				background-size: 2850px auto;
+			}
+			label{
+				display: inline-block;
+				width:12rem;
+			}
+			h1{font-weight:100;font-size:16rem;color :#78909c;}
+			h2{font-weight:200;font-size:6rem;}
+			h3{font-weight:400;font-size:2rem;}
+			#chart, #chart2{
+				-webkit-border-radius: 4px;
+				border-radius: 4px;
+				overflow: hidden;
+				box-shadow: 0 8px 16px rgba(0,0,0,.1);
+				height: 70rem;
+				border: 1px solid #eeeeee;
+			}
+			#chart{background: #f5f5f5;}
+			#chart2{background: #eceff1;}
+			hr{
+				border: none;
+				background: #90a4ae;
+				height:1px;
+				clear : both;
+			}
+			.dark{background-color: rgba(0,0,0,.2)}
+			ul{
+				list-style:none;
+			}
+			li{
+				font-size: 3rem;
+			}
+			.button, button{
+				border: none;
+				background :  #00b0ff;
+				padding: 1rem 2rem;
+				color: #f5f5f5;
+				font-size:2.5rem;
+				border-radius: 2px;
+				-webkit-transition: all .1s ease-in-out;
+				-moz-transition: all .1s ease-in-out;
+				-ms-transition: all .1s ease-in-out;
+				-o-transition: all .1s ease-in-out;
+				transition: all .1s ease-in-out;
+				cursor:pointer;
+				font-weight: 400;
+				letter-spacing: 1px;
+				text-shadow: 0 1px 0 rgba(0,0,0,.1);
+			}
+			.button:hover, button:hover{
+				border: none;
+				background :  #40c4ff;
+				box-shadow: 0 8px 16px rgba(0,0,0,.1);
+				-moz-transform: translateX(0px) translateY(-4px);
+				-webkit-transform: translateX(0px) translateY(-4px);
+				-o-transform: translateX(0px) translateY(-4px);
+				-ms-transform: translateX(0px) translateY(-4px);
+				transform: translateX(0px) translateY(-4px);
+				-webkit-transition: all .05s ease-in-out;
+				-moz-transition: all .05s ease-in-out;
+				-ms-transition: all .05s ease-in-out;
+				-o-transition: all .05s ease-in-out;
+				transition: all .05s ease-in-out;
+			}
+			.button:active, button:active{
+				border: none;
+				background :  #0091ea;
+				-moz-transform: translateX(0px) translateY(0px);
+				-webkit-transform: translateX(0px) translateY(0px);
+				-o-transform: translateX(0px) translateY(0px);
+				-ms-transform: translateX(0px) translateY(0px);
+				transform: translateX(0px) translateY(0px);
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div class='flex middle center' style='height:100%'>
+			<div>
+				<h1 style='margin: 3rem'>Triceraplots</h1>
+				<hr />
+			</div>
+		</div>
+		
+
+		<div class='row flex-desk-only middle center' style='height:100%'>
+
+			<div class='col-3-10 col-1-1-lap pad'>
+				
+				<h2>Powerful</h2>
+				<p class="marg-n">Triceraplots uses web workers descimate dynamically. This dynamic level of detail (LoD) allows tricerplots to plot massive datasets with limited CPU overhead.</p>
+				
+				<h2 class="marg-n">Fluid & Responsive</h2>
+				<p class="marg-n">Tricerplots height and width are entirely dynamic. Resize your window horizontally to see it in action.</p>
+
+				<h2 class="marg-n">Efficient</h2>
+				<p class="marg-n">Triceraplots constantly adjusts it's frame rate, level of detail, and </p>
+				<div class="marg-n">
+					<h3 class="marg-n">FPS</h3>
+					<input style="margin-top:1rem;" id='fps' disabled='true'></input>
+					<h3 class="marg-n">Range (points represented by chart)</h3>
+					<input style="margin-top:1rem;" id='visualspan' disabled='true'></input>
+					<h3 class="marg-n">Drawn (points actually drawn by chart)</h3>
+					<input style="margin-top:1rem;" id='visuallen' disabled='true'></input>
+				</div>
+			</div>
+
+			<div class='col-7-10 col-1-1-lap pad'>
+				<div id='chart' class="col-1-1"></div>
+			</div>
+
+		</div>
+
+
+		<div class='row flex-desk-only middle center' style='height:100%'>
+			
+			<div class='col-1-1 pad'>
+				<div id='chart2' class="marg-n"></div>
+				<div class="row">
+					<div class="col-1-3">
+						<h3 class="marg-n">Draw Style</h3>
+						<div class="row flex marg-n">
+							<div class="col-auto button" id="fill"><i class="icon-chart-area"></i> Fill</div>
+							<div class="col-auto marg-w marg-e button" id="line"><i class="icon-chart-line"></i> Line</div>
+							<div class="col-auto marg-e button" id="curve"><i class="icon-chart-line"></i> Curve</div>
+							<div class="col-auto button" id="wave"><i class="icon-signal-1"></i> Wave</div>
+						</div>
+					</div>
+					<div class="col-1-3">
+						<h3 class="marg-n">Colors</h3>
+						<div class='marg-n'>
+							<label>Red</label>
+							<input type='range' id="red" min='0' max='255'/>
+							<br />
+							<label>Blue</label>
+							<input type='range' id="blue" min='0' max='255'/>
+							<br />
+							<label>Green</label>
+							<input type='range' id="green" min='0' max='255'/>
+							<br />
+							<label>Alpha</label>
+							<input type='range' id="alpha" min='0' max='1' step='.05'/>
+						</div>
+					</div>
+					<div class="col-1-3">
+						<h3 class="marg-n">Misc</h3>
+						<div class='marg-n'>
+							<h4>Scrubber</h4>
+							<input type='range' id="scrubber" min='0' max='128' step='1'/>
+							<br />
+
+							<h4>X Axis</h4>
+							<input type='range' id="xaxis" min='0' max='32' step='1'/>
+							<br />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+
+			document.body.onscroll = function(){
+				document.body.style.backgroundPosition = "-1911px "+(250 + (document.body.scrollTop * .5))+"px";
+			}
+
+			function to(n){
+				n = (parseInt(n))?n:0;
+				TweenLite.to(document.body, 1, {scrollTop: window.innerHeight * n})
+			}
+
+			// --------------------------------------------------------------------------------------------------------
+			// Chart One
+			// --------------------------------------------------------------------------------------------------------
+			var dates = [];
+			var data = [[],[],[]];
+
+			for(var i = 0; i < 1000; i++){
+				dates.push((600 * 60 * 24) * i)
+				for(var d in data){
+					data[d].push(Math.random() * 250);
+				}
+			}
+
+			var chart = new Triceraplots({
+				container : document.getElementById("chart"),
+				dates : dates,
+				data : data,
+				tooltips : {
+					format : [
+					    function(n){return n.toFixed(2)},
+		                function(n){return n.toFixed(1)+"%"},
+		                function(n){return n.toFixed(1)+" kW"},
+		                function(n){return "$"+n.toFixed(2)}
+					]
+				},
+				axes : {
+					y : 
+					{
+						"left" : {
+							format : function(n){return Math.round(n)},
+							align: 'right'
+						},
+						"right" : {
+							format : function(n){return Math.round(n)},
+							align: 'left'
+						}
+					}
+				},
+				worker : "lib/triceraplots-worker.js",
+				onupdate : function(){
+					document.getElementById('fps').value = this.stats.draw.fps
+					document.getElementById('visuallen').value = (this.trimmed_visual_data[0].length) * this.trimmed_visual_data.length;
+					document.getElementById('visualspan').value = (this.plot_end - this.plot_start) * this.trimmed_visual_data.length;
+				}
+			})
+
+			chart.set_style(0, {
+				type: "fill"
+			})
+
+			chart.set_style(1, {
+				type: "fill",
+				lineWidth : 1
+			})
+
+			chart.set_style(2, {
+				type: "line"
+			})
+
+			chart.set_style(3, {
+				type: "line",
+				lineWidth : 1
+			})
+			// --------------------------------------------------------------------------------------------------------
+
+
+
+
+			// --------------------------------------------------------------------------------------------------------
+			// Chart 2
+			// --------------------------------------------------------------------------------------------------------
+			var data2 = [[]]
+			var dates2 = []
+			for(var i = 0; i < 150; i++){
+				dates2.push((600 * 60 * 24) * i)
+				for(var d in data2)
+					data2[d].push(Math.random() * 250)
+			}
+			var chart2 = new Triceraplots({
+				container : document.getElementById("chart2"),
+				dates : dates2,
+				data : data2,
+				axes : {
+					y : {
+						format : function(n){return Math.round(n.tofixed(2))}
+					}
+				},
+				worker : "lib/triceraplots-worker.js"
+			})
+
+			chart2.config.draw.idle_fps = 30;
+
+			chart2.set_style(0, {
+				type: "fill",
+				strokeStyle : "#d84315",
+				fillStyle : "#d84315"
+			})
+
+			document.getElementById("line").onclick = function(){chart2.set_style(0,{type:"line"})}
+			document.getElementById("wave").onclick = function(){chart2.set_style(0,{type:"wave"})}
+			document.getElementById("fill").onclick = function(){chart2.set_style(0,{type:"fill"})}
+			document.getElementById("curve").onclick = function(){chart2.set_style(0,{type:"curve"})}
+
+			function setColor(){
+				var color = "rgba("
+				color += document.getElementById("red").value+",";
+				color += document.getElementById("green").value+",";
+				color += document.getElementById("blue").value+",";
+				color += document.getElementById("alpha").value;
+				color += ")";
+				chart2.set_style(0, {
+					strokeStyle : color,
+					fillStyle : color
+				})
+			}
+
+			setColor()
+
+			document.getElementById("red").oninput = setColor;
+			document.getElementById("green").oninput = setColor;
+			document.getElementById("blue").oninput = setColor;
+			document.getElementById("alpha").oninput = setColor;
+
+			document.getElementById("scrubber").oninput = function(){chart2.config.scrubber.size[1] = this.value}
+			document.getElementById("xaxis").oninput = function(){chart2.config.axes.x.size[1] = this.value}
+			// --------------------------------------------------------------------------------------------------------
+
+		</script>
+	</body>
+</html>
